@@ -27,8 +27,9 @@ import codelets.behaviors.GoToClosestApple;
 import codelets.motor.HandsActionCodelet;
 import codelets.motor.LegsActionCodelet;
 import codelets.perception.AppleDetector;
-import codelets.perception.JewelDetector;
 import codelets.perception.ClosestAppleDetector;
+import codelets.perception.DeliverySpotDetector;
+import codelets.perception.JewelDetector;
 import codelets.perception.LeafletReader;
 import codelets.sensors.InnerSense;
 import codelets.sensors.Vision;
@@ -112,6 +113,14 @@ public class AgentMind extends Mind {
                 List<Leaflet> leaflets = new ArrayList<>();
                 leafletsMO = createMemoryObject("LEAFLETS", leaflets);
                 registerMemory(leafletsMO, "Working");
+                // DeliverySpot
+                Memory deliverySpotMO;
+                Idea spot = Idea.createIdea("deliverySpot", "", Idea.guessType("AbstractObject", null, 1.0, 0.5));
+                spot.add(Idea.createIdea("x",        0D, Idea.guessType("Property", null, 1.0, 0.5)));
+                spot.add(Idea.createIdea("y",        0D, Idea.guessType("Property", null, 1.0, 0.5)));
+                spot.add(Idea.createIdea("distance", 0D, Idea.guessType("Property", null, 1.0, 0.5)));
+                deliverySpotMO = createMemoryObject("DELIVERY_SPOT", spot);
+                registerMemory(deliverySpotMO, "Working");
                 
  		// Create Sensor Codelets	
 		Codelet vision=new Vision(env.c);
@@ -160,6 +169,13 @@ public class AgentMind extends Mind {
                 leafletReader.addOutput(leafletsMO);
                 insertCodelet(leafletReader);
                 registerCodelet(leafletReader, "Perception");
+
+                // DeliverySpot
+                Codelet deliverySpotDetector = new DeliverySpotDetector();
+                deliverySpotDetector.addInput(innerSenseMO);
+                deliverySpotDetector.addOutput(deliverySpotMO);
+                insertCodelet(deliverySpotDetector);
+                registerCodelet(deliverySpotDetector, "Perception");
 		
 		// Create Behavior Codelets
 		Codelet goToClosestApple = new GoToClosestApple(creatureBasicSpeed,reachDistance);

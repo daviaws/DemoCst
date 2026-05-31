@@ -59,6 +59,7 @@ public final class Environment {
                 time = Constants.TIMEFRAME;
             }
             w.getDimensionAndDeliverySpot();
+            World.createDeliverySpot(w.getEnvironmentWidth() / 2, w.getEnvironmentHeight() / 2);
             ResourcesGenerator rg = new ResourcesGenerator(time, w.getEnvironmentWidth(), w.getEnvironmentHeight(), w.getDeliverySpot().getX(), w.getDeliverySpot().getY());
             rg.start();
         } catch (CommandExecException ex) {
