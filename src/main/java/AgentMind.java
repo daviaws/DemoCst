@@ -24,6 +24,7 @@ import br.unicamp.cst.representation.idea.Idea;
 import codelets.behaviors.EatClosestApple;
 import codelets.behaviors.Forage;
 import codelets.behaviors.GoToClosestApple;
+import codelets.behaviors.LeafletSelectorCodelet;
 import codelets.motor.HandsActionCodelet;
 import codelets.motor.LegsActionCodelet;
 import codelets.perception.AppleDetector;
@@ -37,6 +38,7 @@ import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import support.PlanStep;
 import ws3dproxy.model.Leaflet;
 import ws3dproxy.model.Thing;
 
@@ -70,7 +72,11 @@ public class AgentMind extends Mind {
                 Memory closestAppleMO;
                 Memory knownApplesMO;
                 Memory knownJewelsMO;
-                
+                // Leaflet Planning
+                Memory targetLeafletMO;
+                Memory deliberativePhaseMO;
+                Memory planStepsMO;
+
                 //Initialize Memory Objects
                 legsMO=createMemoryContainer("LEGS");
                 registerMemory(legsMO,"Motor");
@@ -121,7 +127,16 @@ public class AgentMind extends Mind {
                 spot.add(Idea.createIdea("distance", 0D, Idea.guessType("Property", null, 1.0, 0.5)));
                 deliverySpotMO = createMemoryObject("DELIVERY_SPOT", spot);
                 registerMemory(deliverySpotMO, "Working");
-                
+
+                // Planning
+                targetLeafletMO      = createMemoryObject("TARGET_LEAFLET", null);
+                deliberativePhaseMO  = createMemoryObject("DELIBERATIVE_PHASE", "");
+                List<PlanStep> planSteps = new ArrayList<>();
+                planStepsMO          = createMemoryObject("PLAN_STEPS", planSteps);
+                registerMemory(targetLeafletMO,     "Working");
+                registerMemory(deliberativePhaseMO, "Working");
+                registerMemory(planStepsMO,         "Working");
+
  		// Create Sensor Codelets	
 		Codelet vision=new Vision(env.c);
 		vision.addOutput(visionMO);
@@ -202,6 +217,16 @@ public class AgentMind extends Mind {
                 insertCodelet(forage);
                 registerCodelet(forage,"Behavioral");
                 behavioralCodelets.add(forage);
+
+                // Planning Leaflet
+                Codelet leafletSelector = new LeafletSelectorCodelet();
+                leafletSelector.addInput(leafletsMO);
+                leafletSelector.addInput(knownJewelsMO);
+                leafletSelector.addOutput(targetLeafletMO);
+                leafletSelector.addOutput(deliberativePhaseMO);
+                leafletSelector.addOutput(planStepsMO);
+                insertCodelet(leafletSelector);
+                registerCodelet(leafletSelector, "Behavioral");
                 
                 // sets a time step for running the codelets to avoid heating too much your machine
                 for (Codelet c : this.getCodeRack().getAllCodelets())
