@@ -38,6 +38,8 @@ public class GoToClosestApple extends Codelet {
 	private int creatureBasicSpeed;
 	private double reachDistance;
 
+	private static final double FUEL_THRESHOLD = 300.0;
+
 	public GoToClosestApple(int creatureBasicSpeed, int reachDistance) {
 		this.creatureBasicSpeed=creatureBasicSpeed;
 		this.reachDistance=reachDistance;
@@ -59,6 +61,13 @@ public class GoToClosestApple extends Codelet {
 
                 Thing closestApple = (Thing) closestAppleMO.getI();
                 Idea cis = (Idea) selfInfoMO.getI();
+
+		double fuel = (double) cis.get("fuel").getValue();
+		if (fuel >= FUEL_THRESHOLD) {
+			activation = 0.0;
+			legsMO.setI("", activation, name);
+			return;
+		}
 
 		if(closestApple != null)
 		{
