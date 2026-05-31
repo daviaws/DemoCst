@@ -29,13 +29,16 @@ import codelets.motor.LegsActionCodelet;
 import codelets.perception.AppleDetector;
 import codelets.perception.JewelDetector;
 import codelets.perception.ClosestAppleDetector;
+import codelets.perception.LeafletReader;
 import codelets.sensors.InnerSense;
 import codelets.sensors.Vision;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import ws3dproxy.model.Leaflet;
 import ws3dproxy.model.Thing;
+
 /**
  *
  * @author rgudwin
@@ -104,6 +107,11 @@ public class AgentMind extends Mind {
                 List<Thing> knownJewels = Collections.synchronizedList(new ArrayList<Thing>());
                 knownJewelsMO = createMemoryObject("KNOWN_JEWELS", knownJewels);
                 registerMemory(knownJewelsMO, "Working");
+                // Leaflets
+                Memory leafletsMO;
+                List<Leaflet> leaflets = new ArrayList<>();
+                leafletsMO = createMemoryObject("LEAFLETS", leaflets);
+                registerMemory(leafletsMO, "Working");
                 
  		// Create Sensor Codelets	
 		Codelet vision=new Vision(env.c);
@@ -146,6 +154,12 @@ public class AgentMind extends Mind {
                 jd.addOutput(knownJewelsMO);
                 insertCodelet(jd);
                 registerCodelet(jd, "Perception");
+
+                // Leaflet
+                Codelet leafletReader = new LeafletReader(env.c);
+                leafletReader.addOutput(leafletsMO);
+                insertCodelet(leafletReader);
+                registerCodelet(leafletReader, "Perception");
 		
 		// Create Behavior Codelets
 		Codelet goToClosestApple = new GoToClosestApple(creatureBasicSpeed,reachDistance);
