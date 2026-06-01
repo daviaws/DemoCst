@@ -21,6 +21,7 @@ services:
       - DISPLAY=${DISPLAY}
     volumes:
       - .:/app
+      - ./logs:/app/logs 
       - ${XAUTHORITY}:/root/.Xauthority:ro
       - gradle-cache:/root/.gradle
     command: sh -c "./gradlew run --no-daemon"

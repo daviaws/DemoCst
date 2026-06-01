@@ -21,6 +21,7 @@ import br.unicamp.cst.core.entities.Codelet;
 import br.unicamp.cst.core.entities.Memory;
 import br.unicamp.cst.core.entities.Mind;
 import br.unicamp.cst.representation.idea.Idea;
+import br.unicamp.cst.support.CodeletsProfiler.FileFormat;
 import codelets.behaviors.EatClosestApple;
 import codelets.behaviors.Forage;
 import codelets.behaviors.GoToClosestApple;
@@ -263,6 +264,12 @@ public class AgentMind extends Mind {
                 planExecutor.addOutput(legsMO);
                 insertCodelet(planExecutor);
                 registerCodelet(planExecutor, "Behavioral");
+
+                // Profiling
+                new java.io.File("logs/").mkdirs();
+                planBuilder.setCodeletProfiler("logs/", "PlanBuilder.json", "DemoCST", 100, 1000L, FileFormat.JSON);
+                planExecutor.setCodeletProfiler("logs/", "PlanExecutor.json", "DemoCST", 100, 1000L, FileFormat.JSON);
+                ad.setCodeletProfiler("logs/", "JewelDetector.json", "DemoCST", 100, 1000L, FileFormat.JSON);
                 
                 // sets a time step for running the codelets to avoid heating too much your machine
                 for (Codelet c : this.getCodeRack().getAllCodelets())

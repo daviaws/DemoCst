@@ -58,3 +58,5 @@ hs_err_pid*
 #Exception
 !/lib/*.jar
 !/gradle/wrapper/*.jar
+
+logs/
