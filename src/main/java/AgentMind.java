@@ -265,6 +265,22 @@ public class AgentMind extends Mind {
                 insertCodelet(planExecutor);
                 registerCodelet(planExecutor, "Behavioral");
 
+                // PubSub
+                // Perception
+                ad.setPublishSubscribe(true);
+                closestAppleDetector.setPublishSubscribe(true);
+                jd.setPublishSubscribe(true);
+
+                // Behavioral — Reactive
+                goToClosestApple.setPublishSubscribe(true);
+                eatApple.setPublishSubscribe(true);
+
+                // Behavioral — Deliberative
+                leafletSelector.setPublishSubscribe(true);
+                planBuilder.setPublishSubscribe(true);
+                planExecutor.setPublishSubscribe(true);
+                delivery.setPublishSubscribe(true);
+
                 // Profiling
                 new java.io.File("logs/").mkdirs();
                 planBuilder.setCodeletProfiler("logs/", "PlanBuilder.json", "DemoCST", 100, 1000L, FileFormat.JSON);
