@@ -101,8 +101,7 @@ public class EatClosestApple extends Codelet {
                                         activation=1.0;
                                         DestroyClosestApple();
 				}else{
-					handsMO.setI("");	//nothing
-                                        activation=0.0;
+					activation=0.0;
 				}
 				
 //				System.out.println(message);

@@ -40,7 +40,7 @@ public class Forage extends Codelet {
         private Memory knownMO;
         private List<Thing> known;
         private MemoryContainer legsMO;
-
+		private static final double ACTIVATION = 0.5;
 
 	/**
 	 * Default constructor
@@ -56,7 +56,7 @@ public class Forage extends Codelet {
 		JSONObject message=new JSONObject();
 			try {
 				message.put("ACTION", "FORAGE");
-                                activation=1.0;
+                                activation=ACTIVATION;
 				legsMO.setI(message.toString(),activation,name);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

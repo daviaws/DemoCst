@@ -25,6 +25,9 @@ import codelets.behaviors.EatClosestApple;
 import codelets.behaviors.Forage;
 import codelets.behaviors.GoToClosestApple;
 import codelets.behaviors.LeafletSelectorCodelet;
+import codelets.behaviors.PlanBuilder;
+import codelets.behaviors.PlanDelivery;
+import codelets.behaviors.PlanExecutor;
 import codelets.motor.HandsActionCodelet;
 import codelets.motor.LegsActionCodelet;
 import codelets.perception.AppleDetector;
@@ -227,6 +230,39 @@ public class AgentMind extends Mind {
                 leafletSelector.addOutput(planStepsMO);
                 insertCodelet(leafletSelector);
                 registerCodelet(leafletSelector, "Behavioral");
+
+                // PlanBuilder
+                Codelet planBuilder = new PlanBuilder();
+                planBuilder.addInput(targetLeafletMO);
+                planBuilder.addInput(knownJewelsMO);
+                planBuilder.addInput(innerSenseMO);
+                planBuilder.addOutput(planStepsMO);
+                planBuilder.addOutput(deliberativePhaseMO);
+                insertCodelet(planBuilder);
+                registerCodelet(planBuilder, "Behavioral");
+
+                // PlanDelivery
+                Codelet delivery = new PlanDelivery(env.c, (LeafletSelectorCodelet) leafletSelector);
+                delivery.addInput(targetLeafletMO);
+                delivery.addInput(deliberativePhaseMO);
+                delivery.addInput(planStepsMO);
+                delivery.addInput(deliverySpotMO);
+                delivery.addInput(leafletsMO);
+                delivery.addOutput(handsMO);
+                delivery.addOutput(legsMO);
+                insertCodelet(delivery);
+                registerCodelet(delivery, "Behavioral");
+
+                // PlanExecutor
+                Codelet planExecutor = new PlanExecutor();
+                planExecutor.addInput(planStepsMO);
+                planExecutor.addInput(deliberativePhaseMO);
+                planExecutor.addInput(innerSenseMO);
+                planExecutor.addInput(knownJewelsMO);
+                planExecutor.addOutput(handsMO);
+                planExecutor.addOutput(legsMO);
+                insertCodelet(planExecutor);
+                registerCodelet(planExecutor, "Behavioral");
                 
                 // sets a time step for running the codelets to avoid heating too much your machine
                 for (Codelet c : this.getCodeRack().getAllCodelets())

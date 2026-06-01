@@ -59,6 +59,10 @@ public class HandsActionCodelet extends Codelet{
             
                 String command = (String) handsMO.getI();
 
+		// if (!command.isEmpty()) {
+			System.out.println("Command issued to agent: ****** " + command + " **********");
+		// }
+
 		if(!command.equals("") && (!command.equals(previousHandsAction))){
 			JSONObject jsonAction;
 			try {
@@ -85,6 +89,12 @@ public class HandsActionCodelet extends Codelet{
                                                 }
 						log.info("Sending Eat command to agent:****** "+objectName+"**********");							
 					}
+					if(action.equals("GET")){
+						try {
+							c.putInSack(objectName);
+						} catch (Exception e) { }
+						System.out.println("Sending Get command to agent:****** "+objectName+"**********");
+					}
 					if(action.equals("BURY")){
                                                 try {
                                                  c.hideIt(objectName);
@@ -92,6 +102,15 @@ public class HandsActionCodelet extends Codelet{
                                                     
                                                 }
 						log.info("Sending Bury command to agent:****** "+objectName+"**********");							
+					}
+				} else if(jsonAction.has("ACTION") && jsonAction.has("LEAFLET_ID")){
+					String action = jsonAction.getString("ACTION");
+					String leafletId = jsonAction.getString("LEAFLET_ID");
+					if(action.equals("DELIVER")){
+						try {
+							c.deliverLeaflet(leafletId);
+						} catch (Exception e) { }
+						log.info("Sending Deliver command, leaflet:****** "+leafletId+"**********");
 					}
 				}
 //                                else if (jsonAction.has("ACTION")) {
@@ -114,7 +133,7 @@ public class HandsActionCodelet extends Codelet{
 
 		}
 //		System.out.println("OK_hands");
-		previousHandsAction = (String) handsMO.getI();
+		// previousHandsAction = (String) handsMO.getI();
 	}//end proc
 
     @Override

@@ -1,0 +1,28 @@
+services:
+  ws3d:
+    image: brgsil/ws3d-coppelia
+    network_mode: host
+    privileged: true
+    environment:
+      - DISPLAY=${DISPLAY}
+    devices:
+      - /dev/snd
+    ports:
+      - "4011:4011"
+
+  democst:
+    build: .
+    depends_on:
+      - ws3d
+    network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - .:/app
+      - gradle-cache:/root/.gradle
+    command: sh -c "./gradlew run --no-daemon"
+    stdin_open: true
+    tty: true
+
+volumes:
+  gradle-cache:

@@ -39,6 +39,7 @@ public class GoToClosestApple extends Codelet {
 	private double reachDistance;
 
 	private static final double FUEL_THRESHOLD = 300.0;
+	private static final double ACTIVATION = 0.9;
 
 	public GoToClosestApple(int creatureBasicSpeed, int reachDistance) {
 		this.creatureBasicSpeed=creatureBasicSpeed;
@@ -99,7 +100,7 @@ public class GoToClosestApple extends Codelet {
                                         message.add(Idea.createIdea("X",(int)appleX, Idea.guessType("Property",null,1.0,0.5)));
                                         message.add(Idea.createIdea("Y",(int)appleY, Idea.guessType("Property",null,1.0,0.5)));
                                         message.add(Idea.createIdea("SPEED",creatureBasicSpeed, Idea.guessType("Property",null,1.0,0.5)));
-                                        activation=1.0;
+                                        activation=ACTIVATION;
 
 				}else{//Stop
                                         message.add(Idea.createIdea("ACTION","GOTO", Idea.guessType("Property",null,1.0,0.5)));
